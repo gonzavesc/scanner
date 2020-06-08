@@ -17,26 +17,53 @@ class _MyApp extends StatefulWidget {
 
 class _MyAppState extends State<_MyApp> {
   ScanResult scanResult;
-  String _host = "IP";
-  String path = 'api/order-candidate';
-
-  Map jsonData = {
-    'orderAmount': '',
-    'lat': '41.1',
-    'lon': '0.3',
-    'contactIdentifier': ''
-  };
-
-  Future apiTest() async {
-    HttpClientRequest request = await HttpClient().post(_host, 8080, path) /*1*/
-      ..headers.contentType = ContentType.json /*2*/
-      ..write(jsonEncode(jsonData)); /*3*/
+  String _host = "192.168.1.59";
+  var contents;
+  String proteins="";
+  void testDecode(String barcode)async{
+    var apiReturn = await apiTest(barcode);
+    var decodedReturn = getData(apiReturn);
+    print(decodedReturn);
+    setState(() {
+      proteins=decodedReturn['nutriments']['proteins_value'].toString();
+    });
+  }
+  Future apiTest(String barCode) async {
+    String path = 'food/' + barCode;
+    final completer = Completer<String>();
+    final contents = StringBuffer();
+    print(path);
+    HttpClientRequest request = await HttpClient().get(_host, 5002, path); /*1*/
     HttpClientResponse response = await request.close(); /*4*/
-    await utf8.decoder.bind(response /*5*/).forEach(print);
+    
+    response.transform(utf8.decoder).listen((data) {
+      contents.write(data);
+    }, onDone: () => completer.complete(contents.toString()));
+    return completer.future;
+  }
+  Map getData(String data){
+    return json.decode(data);
   }
 
   @override
   Widget build(BuildContext context) {
+    var contentList = <Widget>[
+      if (scanResult != null)
+        Card(
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Text("Raw Content"),
+                subtitle: Text(scanResult.rawContent ?? ""),
+              ),
+              RaisedButton(onPressed: () {
+                testDecode(scanResult.rawContent ?? "");
+              }),
+              Text(proteins)
+            ],
+          ),
+        )
+    ];
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -50,7 +77,9 @@ class _MyAppState extends State<_MyApp> {
             )
           ],
         ),
-        body: Text(scanResult.rawContent ?? ""),
+        body: Column(
+          children: contentList,
+        ),
       ),
     );
   }
