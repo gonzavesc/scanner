@@ -20,12 +20,16 @@ class _MyAppState extends State<_MyApp> {
   String _host = "192.168.1.59";
   var contents;
   String proteins="";
+  String carbs="";
+  String fat="";
   void testDecode(String barcode)async{
     var apiReturn = await apiTest(barcode);
     var decodedReturn = getData(apiReturn);
     print(decodedReturn);
     setState(() {
       proteins=decodedReturn['nutriments']['proteins_value'].toString();
+      carbs=decodedReturn['nutriments']['carbohydrates_value'].toString();
+      fat=decodedReturn['nutriments']['fat_value'].toString();
     });
   }
   Future apiTest(String barCode) async {
@@ -59,7 +63,10 @@ class _MyAppState extends State<_MyApp> {
               RaisedButton(onPressed: () {
                 testDecode(scanResult.rawContent ?? "");
               }),
-              Text(proteins)
+              Row(children: <Widget>[Text("Protein per 100g: "),Text(proteins)],),
+              Row(children: <Widget>[Text("Carbs per 100g: "),Text(carbs)],),
+              Row(children: <Widget>[Text("Fat per 100g: "),Text(fat)],),
+              
             ],
           ),
         )
