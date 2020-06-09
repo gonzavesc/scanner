@@ -14,3 +14,9 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## TODO List
+- Manual Food entry in case food is not available in the DB
+- Error handling in case the food is not available in the DB
+- Option to add to the remote DB if the food is new.
+- Store last transactions and last added foods locally,
