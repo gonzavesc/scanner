@@ -19,4 +19,7 @@ samples, guidance on mobile development, and a full API reference.
 - Manual Food entry in case food is not available in the DB
 - Error handling in case the food is not available in the DB
 - Option to add to the remote DB if the food is new.
-- Store last transactions and last added foods locally,
+- Store last transactions and last added foods locally.
+- Option to set goals of Kcal, prot (gr), fat (gr), carbs(gr).
+ - Calendar to see past meals.
+ - Graph of kcal, prot... for past 7 days.  
